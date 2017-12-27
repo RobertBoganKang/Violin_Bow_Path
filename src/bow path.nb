@@ -1,0 +1,200 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      6643,        192]
+NotebookOptionsPosition[      5103,        159]
+NotebookOutlinePosition[      5444,        174]
+CellTagsIndexPosition[      5401,        171]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Bow Path", "Title",
+ CellChangeTimes->{{3.723392489957024*^9, 
+  3.723392491759103*^9}},ExpressionUUID->"26533717-c1b1-4de5-a4ed-\
+196524800652"],
+
+Cell[CellGroupData[{
+
+Cell["Initialize Functions", "Section",
+ CellChangeTimes->{{3.723392507872555*^9, 
+  3.7233925321850777`*^9}},ExpressionUUID->"a627f582-1470-4c8f-a056-\
+ad596ae8b144"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Clear", "[", "\"\<Global`*\>\"", "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Get", "[", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<bowPath.wl\>\""}], 
+   "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.723392159222501*^9, 3.7233922013850203`*^9}, {
+   3.723392417405394*^9, 3.72339241766674*^9}, {3.7233924678873034`*^9, 
+   3.72339247927211*^9}, 
+   3.723402301796241*^9},ExpressionUUID->"61a2da2c-5c3b-470d-b6e6-\
+6152562022bb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Try Demo Data", "Section",
+ CellChangeTimes->{{3.723392533821683*^9, 
+  3.72339253706382*^9}},ExpressionUUID->"38c295d0-9a61-4055-9d25-\
+c3ddb7410f6d"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Part", ":", " ", 
+    RowBox[{"Harvest", " ", "Song", " ", "of", " ", "Fishman"}]}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"bowPath", "[", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+     RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<demo.csv\>\""}], 
+    "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.723393167412191*^9, 3.7233931677953243`*^9}, {
+  3.7233980338781443`*^9, 3.7233980634052467`*^9}, {3.7233991666957684`*^9, 
+  3.7233991677264767`*^9}},ExpressionUUID->"9af9147e-6ca8-4cf8-9f56-\
+259f77bf1af1"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"Part", ":", " ", 
+     RowBox[{"Saint", " ", "Seans"}]}], ",", " ", "introduction"}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"bowPath", "[", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+     RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<demo2.csv\>\""}], 
+    "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.723393171822834*^9, 3.723393173022884*^9}, {
+  3.723397470604851*^9, 3.723397470897393*^9}, {3.7233980664140253`*^9, 
+  3.723398099942484*^9}},ExpressionUUID->"cb8e413f-9960-482f-a546-\
+36c36cddf479"],
+
+Cell[BoxData[
+ RowBox[{"bowPath", "[", 
+  RowBox[{"Import", "[", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<swipe.csv\>\""}], 
+   "]"}], "]"}]], "Input",ExpressionUUID->"0353bd08-729b-480f-90ee-\
+c72754570d61"],
+
+Cell[BoxData[
+ RowBox[{"bowPath", "[", 
+  RowBox[{"Import", "[", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<shortswipe.csv\>\""}],
+    "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.723397475398273*^9, 
+  3.723397475906337*^9}},ExpressionUUID->"120613be-ea85-4286-b47a-\
+45c13db94588"],
+
+Cell[BoxData[
+ RowBox[{"bowPath", "[", 
+  RowBox[{"Import", "[", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+    "\"\<reverseswipe.csv\>\""}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{
+  3.723392773685164*^9, {3.72339300462851*^9, 3.723393008091345*^9}, {
+   3.7233930789435873`*^9, 3.723393109457301*^9}, {3.7233931438425093`*^9, 
+   3.723393148945619*^9}, {3.723393766454191*^9, 3.72339376676801*^9}, {
+   3.723397601577485*^9, 
+   3.723397630100075*^9}},ExpressionUUID->"6de247bf-6e16-4097-87f9-\
+507253cd34e3"],
+
+Cell[BoxData[
+ RowBox[{"bowPath", "[", 
+  RowBox[{"Import", "[", 
+   RowBox[{
+    RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<waveswipe.csv\>\""}], 
+   "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.723393771741714*^9, 
+  3.723393773359889*^9}},ExpressionUUID->"ec12d2aa-92d5-44ab-8cf5-\
+e24691e38f7a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Try Your Data Here...", "Section",
+ CellChangeTimes->{{3.7233925387732058`*^9, 3.723392572616444*^9}, {
+  3.723404059314893*^9, 3.7234040599024477`*^9}, {3.723404104195368*^9, 
+  3.723404105040807*^9}},ExpressionUUID->"6ab33166-aed4-4956-b3dc-\
+358bcae56119"],
+
+Cell[BoxData[
+ RowBox[{"CustomData", "=", 
+  RowBox[{"Import", "[", 
+   RowBox[{"SystemDialogInput", "[", "\"\<FileOpen\>\"", "]"}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.723404128029435*^9, 
+  3.723404144536256*^9}},ExpressionUUID->"b6a571c6-502c-4198-826c-\
+e6c2594a304d"],
+
+Cell[BoxData[
+ RowBox[{"bowPath", "[", "CustomData", "]"}]], "Input",
+ CellChangeTimes->{{3.723392582125223*^9, 3.723392582177949*^9}, {
+  3.723392629215869*^9, 3.723392647113439*^9}, {3.723404125225878*^9, 
+  3.723404136686163*^9}},ExpressionUUID->"b1a41403-b0c5-4988-9505-\
+9bcb064b01e2"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{741, 696},
+WindowMargins->{{Automatic, 407}, {Automatic, 155}},
+FrontEndVersion->"11.2 for Linux x86 (64-bit) (September 10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 151, 3, 98, "Title",ExpressionUUID->"26533717-c1b1-4de5-a4ed-196524800652"],
+Cell[CellGroupData[{
+Cell[756, 29, 167, 3, 68, "Section",ExpressionUUID->"a627f582-1470-4c8f-a056-ad596ae8b144"],
+Cell[926, 34, 509, 13, 57, "Input",ExpressionUUID->"61a2da2c-5c3b-470d-b6e6-6152562022bb"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1472, 52, 157, 3, 68, "Section",ExpressionUUID->"38c295d0-9a61-4055-9d25-c3ddb7410f6d"],
+Cell[1632, 57, 575, 14, 55, "Input",ExpressionUUID->"9af9147e-6ca8-4cf8-9f56-259f77bf1af1"],
+Cell[2210, 73, 582, 15, 55, "Input",ExpressionUUID->"cb8e413f-9960-482f-a546-36c36cddf479"],
+Cell[2795, 90, 236, 6, 31, "Input",ExpressionUUID->"0353bd08-729b-480f-90ee-c72754570d61"],
+Cell[3034, 98, 310, 8, 31, "Input",ExpressionUUID->"120613be-ea85-4286-b47a-45c13db94588"],
+Cell[3347, 108, 537, 12, 31, "Input",ExpressionUUID->"6de247bf-6e16-4097-87f9-507253cd34e3"],
+Cell[3887, 122, 309, 8, 31, "Input",ExpressionUUID->"ec12d2aa-92d5-44ab-8cf5-e24691e38f7a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4233, 135, 265, 4, 68, "Section",ExpressionUUID->"6ab33166-aed4-4956-b3dc-358bcae56119"],
+Cell[4501, 141, 281, 7, 31, "Input",ExpressionUUID->"b6a571c6-502c-4198-826c-e6c2594a304d"],
+Cell[4785, 150, 290, 5, 31, "Input",ExpressionUUID->"b1a41403-b0c5-4988-9505-9bcb064b01e2"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
