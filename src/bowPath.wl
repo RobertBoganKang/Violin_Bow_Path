@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-bowPath[data_]:=Module[{title,tIndex,tData,tAccumulateData,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,tc,angleTurnPre,angleTurnNow,stringangle},
+bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,tAccumulateData,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,tc,angleTurnPre,angleTurnNow,stringangle,p2},
 (*data section*)
 (*import data*)
 (*title of data*)
@@ -32,16 +32,20 @@ rootMargin=0.1;
 (*string angle: 10 degree*)stringangle=10;
 (*length division*)d=4;
 (*change string time [*]<1*)tc=0.5;
+(*second deirivitive peak percentage*)p2=.3;
 (*bow angle: degree*)
-bAng={15,5,-5,-15};
+bAng={1.5stringangle,.5stringangle,-.5stringangle,-1.5stringangle};
+(*changing angle of strings*)changeStringControlAngle={-stringangle,0,stringangle};
 bowAngle={4->bAng[[1]],3->bAng[[2]],2->bAng[[3]],1->bAng[[4]]};
 aData=sData/.bowAngle;
-angleData=Transpose[{tAccumulateData,aData}];
-(*change quickly when turning*)
-angleData2={angleData[[1]]};
-angleTurnPre=angleData[[1,2]]==angleData[[2,2]];
-Do[angleTurnNow=angleData[[i,2]]==angleData[[i-1,2]];If[angleData[[i,2]]!=angleData[[i-1,2]]&&angleTurnPre!=angleTurnNow,AppendTo[angleData2,{angleData[[i,1]]-tc/2*tData[[i-1]],angleData[[i-1,2]]}];AppendTo[angleData2,{angleData[[i,1]]+tc/2*tData[[i]],angleData[[i,2]]}],AppendTo[angleData2,{angleData[[i,1]],angleData[[i,2]]}]],{i,2,Length[angleData]}];
-angleFunction=Interpolation[angleData2, Method->"Spline",InterpolationOrder->2];(*plot section*)
+angleData={{tAccumulateData[[1]],aData[[1]]}};
+(*1st derivitive control points*)
+Do[AppendTo[angleData,{tAccumulateData[[i]],Which[aData[[i]]-aData[[i-1]]<0,changeStringControlAngle[[sData[[i]]]],aData[[i]]-aData[[i-1]]>0,changeStringControlAngle[[sData[[i]]-1]],True,aData[[i]]]}],{i,2,Length[tAccumulateData]}];
+angleData2=angleData;
+(*2nd derivitive control points*)
+Do[If[(aData[[i]]-aData[[i-1]])*(aData[[i+1]]-aData[[i]])<0,AppendTo[angleData2,{(tAccumulateData[[i]]+tAccumulateData[[i+1]])/2,angleData[[i,2]]+Sign[aData[[i]]-aData[[i-1]]]*p2*stringangle}]],{i,2,Length[tAccumulateData]-1}];
+angleData2=Sort[angleData2];
+angleFunction=Interpolation[angleData2,Method->"Spline",InterpolationOrder->2];(*plot section*)
 (*string plot*)
 angleData3=Table[{t,angleFunction[t]},{t,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
 stringplot=Show[{ListLinePlot[angleData3,PlotStyle->Directive[Gray,Dashed],PlotRange->All],Graphics[Flatten@{Black,Table[Text[nData[[i]],angleData[[i]],Background->White],{i,1,Length[nData]}]}]},Frame->True,AspectRatio->1/4,FrameLabel->{"t","angle"},ImageSize->800];
@@ -51,7 +55,7 @@ angleplot=Show[{ListLinePlot[lengthData, PlotStyle -> Directive[Gray, Dashed],Pl
 (*plot path*)
 path=Table[{x*1.,(lengthFunction[x]+rootMargin)*{Cos[angleFunction[x]*\[Pi]/360],Sin[angleFunction[x]*\[Pi]/360]}},{x,1,tAccumulateData[[-1]],1/n}];
 speed=Norm/@Differences[path[[;;,2]]];speed/=Max[speed];
-noteTextPrep={Transpose[angleData][[-1]],Transpose[lengthData][[-1]]};
+noteTextPrep={Transpose[angleData][[-1]],lData};
 noteTextCoordinate=Table[(rootMargin+noteTextPrep[[2,i]])*{Cos[noteTextPrep[[1,i]]*\[Pi]/360],Sin[noteTextPrep[[1,i]]*\[Pi]/360]},{i,Length[tData]}];
 lDirection=Differences[Append[lData,0]];
 (*plot bow path*)
