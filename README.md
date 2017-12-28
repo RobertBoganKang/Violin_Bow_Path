@@ -11,7 +11,7 @@ It is a matrix with given attributes:
 * `n`: (any format ~ string) music note indicator, you can put any string that indicate your note that help you understand.
 * `t`: (real number) time length of music note.
 * `l`: (real number range from 0 to 1) the starting position of bow at given time -- 0 is root of bow, 1 is the tip of bow.
-* `s`: (integer from 1 to 4; count from right to left) the string index -- 4: G, 3: D, 2: A, 1: E; other string instruments are supported only by changing the parameter `stringname`, and it is in the comment of code.
+* `s`: (integer from 1 to **x**:`number of strings`; count from right to left) the string index -- `vioin` 4: G, 3: D, 2: A, 1: E; other string instruments are supported only by changing the parameter `stringname` (violin:`stringname={"G","D","A","E"}`; examples are in the comment of code).
 #### Notice
 * Attribute `n` is not required; any order of these attributes is allowed only if `t`, `l` and `s` is given.
 * You should give at least 3 notes to calculate.
