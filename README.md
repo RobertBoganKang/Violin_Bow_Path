@@ -14,7 +14,6 @@ This algorithm is not optimized. It can roughly show one solution with strict co
 Demos are in demo folder.
 Source files are in src folder.
 ## Demos
-### Demo Score
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo%20score.png "Demo Score")
 ### Demo
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo.png "Demo")
