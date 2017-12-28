@@ -15,3 +15,18 @@ It can only roughly show one solution with strict condition.
 ## Files
 Demos are in demo folder.
 Source files are in src folder.
+## Demos
+### Demo Score
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo%20score.png "Demo Score")
+### Demo
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo.png "Demo")
+### Demo2
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo2.png "Demo")
+### Swipe
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/swipe.png "Swipe")
+### Short Swipe
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/shortswipe.png "Short Swipe")
+### Reverse Swipe
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/reverseswipe.png "Reverse Swipe")
+### Wave Swipe
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/waveswipe.png "Wave Swipe")
