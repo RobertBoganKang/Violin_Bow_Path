@@ -23,7 +23,7 @@ lengthFunction=Interpolation[lDataPrep1, Method->"Spline",InterpolationOrder->2]
 lData=Table[lengthFunction[tAccumulateData[[i]]],{i,Length[lDataPrep]}];
 sIndex=First@First@Position[title,"s"];
 sData=data[[2;;,sIndex]];
-(*if no indication, set to N/A*)
+(*if no indication, set to the time*)
 If[Position[title,"n"]!={},nIndex=First@First@Position[title,"n"];
 nData=data[[2;;,nIndex]];,nData=Table[tAccumulateData[[i]],{i,Length[lData]}]];
 (*initilize system parameters*)
