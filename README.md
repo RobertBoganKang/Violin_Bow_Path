@@ -6,16 +6,18 @@ This algorithm could calculate the violin bow path with custom given condition.
 ### Deficiency
 This algorithm is not optimized. It can roughly show one solution with strict condition. However, this solution is pretty much near the optimized solution ignoring some low frequency movement, thus it still could help me to solve violin problem.
 ## Details
-### Custom Data Form
+### Custom Data Format
 It is a matrix with given attributes:
-* `n`: music note indicator, you can put any string that indicate your note that help you understand.
-* `t`: time length of music note.
-* `l`: the starting position of bow at given time -- 0 is root of bow, 1 is the tip of bow.
-* `s`: the string index -- 4: G, 3: D, 2: A, 1: E.
+* `n`: (any format ~ string) music note indicator, you can put any string that indicate your note that help you understand.
+* `t`: (real number) time length of music note.
+* `l`: (real number range from 0 to 1) the starting position of bow at given time -- 0 is root of bow, 1 is the tip of bow.
+* `s`: (integer from 1 to 4) the string index -- 4: G, 3: D, 2: A, 1: E.
 #### Notice
-Attribute `n` is not required; any order of these attributes is allowed only if `t`, `l` and `s` is given.
+* Attribute `n` is not required; any order of these attributes is allowed only if `t`, `l` and `s` is given.
+* You should give at least 3 notes to calculate.
+* You should give one more note at the end, since the path of last note will not show up.
 
-You should give one more note at the end, since the path of last note will not show up.
+See examples in demo `.csv`.
 ### Plots
 #### Bow Path
 * Color of path represent the speed of bow (red: fast, blue: slow).
