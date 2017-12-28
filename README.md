@@ -17,7 +17,7 @@ Attribute `n` is not required; any order of these attributes is allowed only if 
 ### Plots
 #### Bow Path
 * Color of path represent the speed of bow (red: fast, blue: slow).
-* Indicators near the path (red: bow from bottom to top, blue: reverse direction; Format: `[time]:[indicator string]`).
+* Indicators near the path (red: bow from root to tip, blue: reverse direction; Format: `[time]:[indicator string]`).
 #### Other Plot
 Other Plot on the bottom represent the angle and position of bow changed by time.
 ## Files
