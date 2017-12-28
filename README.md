@@ -10,7 +10,7 @@ This algorithm is not optimized. It can roughly show one solution with strict co
 It is a matrix with given attributes:
 * `n`: music note indicator, you can put any string that indicate your note that help you understand.
 * `t`: time length of music note.
-* `l`: the position of bow -- 0 is root of bow, 1 is the tip of bow.
+* `l`: the starting position of bow at given time -- 0 is root of bow, 1 is the tip of bow.
 * `s`: the string index -- 4: G, 3: D, 2: A, 1: E.
 
 Attribute `n` is not required; any order of these attributes is allowed only if `t`, `l` and `s` is given.
