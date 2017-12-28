@@ -4,7 +4,7 @@ When play super fast notes on violin, the path of bow become exteremly important
 
 This algorithm could calculate the violin bow path with custom given condition.
 ### Deficiency
-This algorithm is not optimized. It can only roughly show one solution with strict condition. However, this solution is pretty much near the optimized solution with some low frequency movement, thus it still could help me to solve some violin problem.
+This algorithm is not optimized. It can roughly show one solution with strict condition. However, this solution is pretty much near the optimized solution ignoring some low frequency movement, thus it still could help me to solve violin problem.
 ## Given Data Form
 * n: music note indicator, you can put any string that indicate your note that help you understand.
 * t: time length of music note.
