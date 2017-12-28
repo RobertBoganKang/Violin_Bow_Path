@@ -11,7 +11,7 @@ It is a matrix with given attributes:
 * n: music note indicator, you can put any string that indicate your note that help you understand.
 * t: time length of music note.
 * l: the position of bow -- 0 is root of bow, 1 is the tip of bow.
-* s: the string index -- 4: G, 3: D, 2: A, 1: E
+* s: the string index -- 4: G, 3: D, 2: A, 1: E.
 ### Plots
 #### Bow Path
 * Color of path represent the speed of bow (red: fast, blue: slow).
