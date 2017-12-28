@@ -23,9 +23,9 @@ lengthFunction=Interpolation[lDataPrep1, Method->"Spline",InterpolationOrder->2]
 lData=Table[lengthFunction[tAccumulateData[[i]]],{i,Length[lDataPrep]}];
 sIndex=First@First@Position[title,"s"];
 sData=data[[2;;,sIndex]];
-(*if no indication, set to the time*)
+(*if no indication, set to empty*)
 If[Position[title,"n"]!={},nIndex=First@First@Position[title,"n"];
-nData=data[[2;;,nIndex]];,nData=Table[tAccumulateData[[i]],{i,Length[lData]}]];
+nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
 (*initilize system parameters*)
 rootMargin=0.1;
 (*sample points*)n=20;
@@ -57,4 +57,4 @@ pathplot=Show[Flatten@{(*show initial point*)Graphics[Flatten@{GrayLevel[.97],Ta
 (*string angle*)Table[ListLinePlot[{0.8*rootMargin*{Cos[\[Pi]/360*10*i],Sin[\[Pi]/360*10*i]},(1.02+rootMargin) {Cos[\[Pi]/360*10*i],Sin[\[Pi]/360*10*i]}},PlotStyle->Directive[LightGray,Dashed]],{i,-1,1}],Graphics[{LightGray,Table[Style[Text[{"G","D","A","E"}[[i]],(.9*rootMargin) {Cos[\[Pi]/360*bAng[[i]]],Sin[\[Pi]/360*bAng[[i]]]}],16],{i,Length[bAng]}]}],
 (*bow length*)Graphics[Flatten@{Dashed,LightGray,Table[Circle[{0,0},rootMargin+i/d,{-16*\[Pi]/360,16*\[Pi]/360}],{i,1,d-1}],Gray,Table[Circle[{0,0},rootMargin+i/d,{-16*\[Pi]/360,16*\[Pi]/360}],{i,{0,d}}]}],Graphics[{LightGray,Table[Style[Text[ToString[InputForm[(i-1)/d]],((i-1)/d+rootMargin) {Cos[\[Pi]/360*16],If[OddQ[i],1,-1]*Sin[\[Pi]/360*16]}+{0,If[OddQ[i],1,-1]*0.005}],16],{i,1,d+1}]}],
 (*Path*)Graphics[Flatten@{Opacity[If[Length[tData]>30,.4,.8]],Thick,Table[{ColorData["Rainbow"][speed[[i]]],Line[{path[[i,2]],path[[i+1,2]]}]},{i,Length[speed]}]}],
-(*time*)If[Length[tData]>30,{},Graphics[Flatten@{Table[Style[Text[ToString[tAccumulateData[[i]]]<>":"<>nData[[i]],noteTextCoordinate[[i]]+RandomReal[.01{-1,1},2]],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White],{i,Length[nData]}]}]]},PlotRange->All,Axes->False,ImageSize->1600,AspectRatio->1];Column[{pathplot,Row[{stringplot,angleplot}]}]];
+(*time*)If[Length[tData]>30,{},Graphics[Flatten@{Table[Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],noteTextCoordinate[[i]]+RandomReal[.01{-1,1},2]],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White],{i,Length[nData]}]}]]},PlotRange->All,Axes->False,ImageSize->1600,AspectRatio->1];Column[{pathplot,Row[{stringplot,angleplot}]}]];
