@@ -14,8 +14,8 @@ It is a matrix with given attributes:
 * s: the string index -- 4: G, 3: D, 2: A, 1: E
 ### Plots
 #### Bow Path
-* Color of path represent the speed of bow (blue: slow, red: fast).
-* Indicators near the path (blue: bow from bottom to top, red: reverse direction; Format: `[time]:[indicator string]`).
+* Color of path represent the speed of bow (red: fast, blue: slow).
+* Indicators near the path (red: bow from bottom to top, blue: reverse direction; Format: `[time]:[indicator string]`).
 #### Other Plot
 Other Plot on the bottom represent the angle and position of bow changed by time.
 ## Files
