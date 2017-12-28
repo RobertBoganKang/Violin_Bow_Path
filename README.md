@@ -12,8 +12,10 @@ It is a matrix with given attributes:
 * `t`: time length of music note.
 * `l`: the starting position of bow at given time -- 0 is root of bow, 1 is the tip of bow.
 * `s`: the string index -- 4: G, 3: D, 2: A, 1: E.
-
+#### Notice
 Attribute `n` is not required; any order of these attributes is allowed only if `t`, `l` and `s` is given.
+
+You should give one more note at the end, since the path of last note will not show up.
 ### Plots
 #### Bow Path
 * Color of path represent the speed of bow (red: fast, blue: slow).
