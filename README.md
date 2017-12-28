@@ -16,7 +16,7 @@ It is a matrix with given attributes:
 #### Bow Path
 * Color of path represent the speed of bow (blue: slow, red: fast).
 * Indicators near the path (blue: bow from bottom to top, red: reverse direction; Format: `[time]:[indicator string]`).
-### Other Plot
+#### Other Plot
 Other Plot on the bottom represent the angle and position of bow changed by time.
 ## Files
 Demos are in demo folder.
