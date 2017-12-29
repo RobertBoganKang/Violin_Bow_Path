@@ -3,7 +3,7 @@
 (*bowPath[] function accept matrix form of data;
 n: indication of notes;
 t: time spent [t accumulate is time axis];
-s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1;
+s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1 (string number>3);
 l: position of bow [root:0, end:1]*)
 bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,stringname,maxindex,tAccumulateData,colorfunction,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,angleTurnPre,angleTurnNow,stringangle,p2,indicatorcoordinate,theta},
 (****start: data prepare****)
@@ -38,22 +38,23 @@ nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
 (****start: initilize system parameters****)
 (*color function of path*)colorfunction[x_]:=ColorData["Rainbow"][x];
 (*colorfunction[x_]:=GrayLevel[1-x];*)
-(*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.1;
+(*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.2;
 (*sample points for unit time of 1*)n=40;
 (*length division*)d=4;
 (*second deirivitive peak percentage*)p2=0.3;
 (*string name*)stringname={"G","D","A","E"};
 (*(*viola*)stringname={"C","G","D","A"};*)(*(*cello*)stringname={"A","D","G","C"};*)(*(*bass*)stringname={"E","A","D","G"};*)(*(*Cello da spalla*)stringname={"C","G","D","A","E"};*)
-(*string total angle: 40 degree total for string instruments*)stringangle=40;
+(*string total angle: total degrees of the largest changing angle difference*)stringangle=50;
 (*max showing index*)maxindex=30;
 (****end: initilize system parameters****)
 
 (****start: calculate control point for interpolation function****)
 (*stringangle: string angle between strings*)
-stringangle/=Length[stringname];
+stringangle/=(Length[stringname]-2);
 (*bow angle: degree*)
 bAng=-Table[(i-.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
-(*changing angle between strings*)changeStringControlAngle=Reverse[Table[bAng[[i-1]]+bAng[[i]],{i,2,Length[bAng]}]/2];
+(*changing angle between strings*)
+changeStringControlAngle=Reverse[Table[bAng[[i-1]]+bAng[[i]],{i,2,Length[bAng]}]/2];
 bowAngle=Table[i->Reverse[bAng][[i]],{i,Length[bAng]}];
 aData=sData/.bowAngle;
 angleData={{tAccumulateData[[1]],aData[[1]]}};
@@ -86,11 +87,21 @@ noteTextPrep={Transpose[angleData][[-1]],lData};
 noteTextCoordinate=Table[(rootMargin+noteTextPrep[[2,i]])*{Cos[noteTextPrep[[1,i]]*\[Pi]/360],Sin[noteTextPrep[[1,i]]*\[Pi]/360]},{i,Length[tData]}];
 lDirection=Differences[Append[lData,0]];
 (*plot bow path*)
-pathplot=Show[Flatten@{(*show initial point*)Graphics[Flatten@{GrayLevel[.97],Table[{PointSize[.07*1.3^(-i*20/n)],Point[path[[i,2]]]},{i,If[Length[path]>n/2,n/2,Length[path]]}]}],
-(*string angle*)Table[ListLinePlot[{0.8*rootMargin*{Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]},(1.02+rootMargin) {Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]}},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.9*rootMargin) {Cos[\[Pi]/360*bAng[[i]]],Sin[\[Pi]/360*bAng[[i]]]}],16],{i,Length[bAng]}]}],
-(*bow length*)Graphics[Flatten@{Dashed,LightGray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,1,d-1}],Gray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,{0,d}}]}],Graphics[{LightGray,Table[Style[Text[ToString[InputForm[(i-1)/d]],((i-1)/d+rootMargin) {Cos[\[Pi]/360*(Max[bAng]+1)],If[OddQ[i],1,-1]*Sin[\[Pi]/360*(Max[bAng]+1)]}+{0,If[OddQ[i],1,-1]*0.005}],16],{i,1,d+1}]}],
+pathplot=Show[Flatten@{Graphics[Flatten@{GrayLevel[.97],Table[{PointSize[.07*1.3^(-i*20/n)],Point[path[[i,2]]]},{i,If[Length[path]>n/2,n/2,Length[path]]}]}],
+(*string angle*)Table[ListLinePlot[{0.8*rootMargin*{Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]},(1.02+rootMargin) {Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]}},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.9*rootMargin) {Cos[\[Pi]/360*bAng[[i]]],Sin[\[Pi]/360*bAng[[i]]]}],20],{i,Length[bAng]}]}],
+(*bow length*)Graphics[Flatten@{Dashed,LightGray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,1,d-1}],Gray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,{0,d}}]}],Graphics[{LightGray,Table[Style[Text[ToString[InputForm[(i-1)/d]],((i-1)/d+rootMargin) {Cos[\[Pi]/360*(Max[bAng]+1)],If[OddQ[i],1,-1]*Sin[\[Pi]/360*(Max[bAng]+1)]}+{-0.01,If[OddQ[i],1,-1]*0.02}],20],{i,1,d+1}]}],
 (*Path*)Graphics[Flatten@{Opacity[If[Length[tData]>maxindex,.4,.8]],Thick,Table[{colorfunction[speed[[i]]],Line[{path[[i,2]],path[[i+1,2]]}]},{i,Length[speed]}]}],
-(*time*)If[Length[tData]>maxindex,{},Graphics[Flatten@{Dashed,Gray,Table[theta=RandomReal[2Pi];indicatorcoordinate=noteTextCoordinate[[i]]+.004*Log[i]*{Cos[theta],Sin[theta]};{Line[{noteTextCoordinate[[i]],indicatorcoordinate}],Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],indicatorcoordinate],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White]},{i,Length[nData],1,-1}]}]]},PlotRange->All,Axes->False,ImageSize->1600,AspectRatio->1];
+(*time*)
+If[Length[tData]>maxindex,{},
+Graphics[Flatten@{Dashed,Gray,
+Table[
+(*set the distance depend by i thus it is less likely to overlap*)
+theta=RandomReal[2*Pi];
+indicatorcoordinate=noteTextCoordinate[[i]]+.01*Sqrt[i]*{Cos[theta],Sin[theta]};
+{Line[{noteTextCoordinate[[i]],indicatorcoordinate}],Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],indicatorcoordinate],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White]}
+,{i,Length[nData],1,-1}]
+},AspectRatio->1]]
+},PlotRange->All,Axes->False,ImageSize->1600];
 (****end: plot section****)
 
 (****show result of plots****)
