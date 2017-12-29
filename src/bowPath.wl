@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,stringname,tAccumulateData,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,tc,angleTurnPre,angleTurnNow,stringangle,p2},
+bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,stringname,tAccumulateData,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,tc,angleTurnPre,angleTurnNow,stringangle,p2,indicatorcoordinate,theta},
 (*data section*)
 (*import data*)
 (*title of data*)
@@ -66,7 +66,7 @@ pathplot=Show[Flatten@{(*show initial point*)Graphics[Flatten@{GrayLevel[.97],Ta
 (*string angle*)Table[ListLinePlot[{0.8*rootMargin*{Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]},(1.02+rootMargin) {Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]}},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.9*rootMargin) {Cos[\[Pi]/360*bAng[[i]]],Sin[\[Pi]/360*bAng[[i]]]}],16],{i,Length[bAng]}]}],
 (*bow length*)Graphics[Flatten@{Dashed,LightGray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,1,d-1}],Gray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,{0,d}}]}],Graphics[{LightGray,Table[Style[Text[ToString[InputForm[(i-1)/d]],((i-1)/d+rootMargin) {Cos[\[Pi]/360*(Max[bAng]+1)],If[OddQ[i],1,-1]*Sin[\[Pi]/360*(Max[bAng]+1)]}+{0,If[OddQ[i],1,-1]*0.005}],16],{i,1,d+1}]}],
 (*Path*)Graphics[Flatten@{Opacity[If[Length[tData]>30,.4,.8]],Thick,Table[{ColorData["Rainbow"][speed[[i]]],Line[{path[[i,2]],path[[i+1,2]]}]},{i,Length[speed]}]}],
-(*time*)If[Length[tData]>30,{},Graphics[Flatten@{Table[Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],noteTextCoordinate[[i]]+RandomReal[.01{-1,1},2]],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White],{i,Length[nData]}]}]]},PlotRange->All,Axes->False,ImageSize->1600,AspectRatio->1];Column[{pathplot,Grid[{{stringplot,angleplot}},ItemSize->Full]},Frame->True]];
+(*time*)If[Length[tData]>30,{},Graphics[Flatten@{Dashed,Gray,Table[theta=RandomReal[2Pi];indicatorcoordinate=noteTextCoordinate[[i]]+.004*Log[i]*{Cos[theta],Sin[theta]};{Line[{noteTextCoordinate[[i]],indicatorcoordinate}],Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],indicatorcoordinate],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White]},{i,Length[nData],1,-1}]}]]},PlotRange->All,Axes->False,ImageSize->1600,AspectRatio->1];Column[{pathplot,Grid[{{stringplot,angleplot}},ItemSize->Full]},Frame->True]];
 
 
 export[x_]:=Module[{},Quiet[CreateDirectory[NotebookDirectory[]<>"exports"]];Column@{Export[NotebookDirectory[]<>"exports/"<>ToString[UnixTime[]]<>".png",x],Export[NotebookDirectory[]<>"exports/"<>ToString[UnixTime[]]<>".pdf",x]}];
