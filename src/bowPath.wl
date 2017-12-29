@@ -5,7 +5,7 @@ n: indication of notes;
 t: time spent [t accumulate is time axis];
 s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1;
 l: position of bow [root:0, end:1]*)
-bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,stringname,tAccumulateData,colorfunction,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,tc,angleTurnPre,angleTurnNow,stringangle,p2,indicatorcoordinate,theta},
+bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,stringname,tAccumulateData,colorfunction,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,angleTurnPre,angleTurnNow,stringangle,p2,indicatorcoordinate,theta},
 (****start: data prepare****)
 (*a. title of data*)
 title=data[[1]];
@@ -39,9 +39,8 @@ nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
 (*color function of path*)colorfunction[x_]:=ColorData["Rainbow"][x];
 (*colorfunction[x_]:=GrayLevel[1-x];*)
 (*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.1;
-(*sample points*)n=40;
+(*sample points for unit time of 1*)n=40;
 (*length division*)d=4;
-(*change string time [*]<1*)tc=0.5;
 (*second deirivitive peak percentage*)p2=0.3;
 (*string name*)stringname={"G","D","A","E"};
 (*(*viola*)stringname={"C","G","D","A"};*)(*(*cello*)stringname={"A","D","G","C"};*)(*(*bass*)stringname={"E","A","D","G"};*)(*(*Cello da spalla*)stringname={"C","G","D","A","E"};*)
