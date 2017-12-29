@@ -25,8 +25,10 @@ See examples in demo `.csv`.
 #### Other Plot
 Other Plot on the bottom represent the angle and position of bow changed by time.
 ## Files
-Demos are in demo folder.
-Source files are in src folder.
+* Demos are in demo folder.
+* Source files are in src folder.
+## Usage
+Go to folder and open file `src/bow path.nb`. Firstly, run the first line to initialize the packages. Then, you can run the demo (or see the demo file) to check it out. Finally, you can run your test case by providing the `.csv` file, and put the url in to the text area in UI, then put your cursor to where you wish to see the result, then click `Calculate` button to see it, OR you can click `Export` button to export files, the files are in the location shown below at the result.
 ## Demos
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo%20score.png "Demo Score")
 ### Demo
