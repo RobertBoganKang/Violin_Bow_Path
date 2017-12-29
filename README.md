@@ -41,3 +41,4 @@ Source files are in src folder.
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/reverseswipe.png "Reverse Swipe")
 ### Wave Swipe
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/waveswipe.png "Wave Swipe")
+![Video of Wave Swipe](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/waveswipe.mp4 "Wave Swipe Video")
