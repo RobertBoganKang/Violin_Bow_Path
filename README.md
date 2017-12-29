@@ -35,10 +35,13 @@ Source files are in src folder.
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo2.png "Demo")
 ### Swipe
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/swipe.png "Swipe")
+![Video of Swipe](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/waveswipe.mp4 "Swipe Video")
 ### Short Swipe
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/shortswipe.png "Short Swipe")
+![Video of Short Swipe](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/shortswipe.mp4 "Short Swipe Video")
 ### Reverse Swipe
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/reverseswipe.png "Reverse Swipe")
+![Video of Reverse Swipe](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/reverseswipe.mp4 "Reverse Swipe Video")
 ### Wave Swipe
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/waveswipe.png "Wave Swipe")
 ![Video of Wave Swipe](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/waveswipe.mp4 "Wave Swipe Video")
