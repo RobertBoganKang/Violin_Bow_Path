@@ -5,7 +5,7 @@ n: indication of notes;
 t: time spent [t accumulate is time axis];
 s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1 (string number>3);
 l: position of bow [root:0, end:1]*)
-bowPath[data_]:=Module[{title,tIndex,tData,changeStringControlAngle,stringname,maxindex,tAccumulateData,colorfunction,lIndex,lDataPrep,lDataPrep1,lData,lengthFunction,sIndex,sData,nIndex,nData,rootMargin,n,d,bAng,bowAngle,aData,angleData,lengthData,angleFunction,path,speed,noteTextPrep,noteTextCoordinate,lDirection,stringplot,pathplot,angleplot,angleData2,angleData3,angleTurnPre,angleTurnNow,stringangle,p2,indicatorcoordinate,theta},
+bowPath[data_]:=Module[{aData,angleData,angleData2,angleData3,angleFunction,angleplot,bAng,bowAngle,changeStringControlAngle,colorfunction,d,indicatorcoordinate,lData,lDataPrep,lDataPrep1,lDirection,lengthData,lengthFunction,lift,liftfunc,lIndex,maxindex,n,nData,nIndex,noteTextCoordinate,noteTextPrep,p2,path,pathplot,rootMargin,sData,sIndex,speed,stringangle,stringname,stringplot,tAccumulateData,tData,temp,theta,tIndex,title,totallift},
 (****start: data prepare****)
 (*a. title of data*)
 title=data[[1]];
@@ -44,17 +44,22 @@ nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
 (*second deirivitive peak percentage*)p2=0.3;
 (*string name*)stringname={"G","D","A","E"};
 (*(*viola*)stringname={"C","G","D","A"};*)(*(*cello*)stringname={"A","D","G","C"};*)(*(*bass*)stringname={"E","A","D","G"};*)(*(*Cello da spalla*)stringname={"C","G","D","A","E"};*)
-(*string total angle: total degrees of the largest changing angle difference*)stringangle=50;
+(*string total angle: total degrees of the largest changing angle difference*)stringangle=80;
 (*max showing index*)maxindex=30;
+(*lift distance: when turning, there is a lift for strings which approximate the geometric location of string*)totallift=.05;
 (****end: initilize system parameters****)
 
 (****start: calculate control point for interpolation function****)
 (*stringangle: string angle between strings*)
-stringangle/=(Length[stringname]-2);
+stringangle/=(Length[stringname]-1);
 (*bow angle: degree*)
 bAng=-Table[(i-.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
 (*changing angle between strings*)
 changeStringControlAngle=Reverse[Table[bAng[[i-1]]+bAng[[i]],{i,2,Length[bAng]}]/2];
+(*calculate lift function*)
+totallift/=(Length[stringname]-1);
+lift=Interpolation[Table[{bAng[[i]],(i-1)*totallift},{i,Length[bAng]}], Method->"Spline",InterpolationOrder->2];
+liftfunc[angle_]:=(lift[angle]*{-Sin[Pi/360*angle],Cos[Pi/360*angle]});
 bowAngle=Table[i->Reverse[bAng][[i]],{i,Length[bAng]}];
 aData=sData/.bowAngle;
 angleData={{tAccumulateData[[1]],aData[[1]]}};
@@ -81,24 +86,24 @@ lengthData=Table[{t*1.,lengthFunction[t]},{t,tAccumulateData[[1]],tAccumulateDat
 angleplot=Show[{ListLinePlot[lengthData, PlotStyle -> Directive[Gray, Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Dashing[None],Table[Text[nData[[i]],{tAccumulateData[[i]],lData[[i]]},Background->White],{i,1,Length[nData]}]},PlotRange->All]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","bow position"},ImageSize->800];
 (*c. bow path plot*)
 (*plot path prepare*)
-path=Table[{x*1.,(lengthFunction[x]+rootMargin)*{Cos[angleFunction[x]*\[Pi]/360],Sin[angleFunction[x]*\[Pi]/360]}},{x,1,tAccumulateData[[-1]],1/n}];
-speed=Norm/@Differences[path[[;;,2]]];speed/=Max[speed];
-noteTextPrep={Transpose[angleData][[-1]],lData};
-noteTextCoordinate=Table[(rootMargin+noteTextPrep[[2,i]])*{Cos[noteTextPrep[[1,i]]*\[Pi]/360],Sin[noteTextPrep[[1,i]]*\[Pi]/360]},{i,Length[tData]}];
-lDirection=Differences[Append[lData,0]];
+path=Table[(lengthFunction[x]+rootMargin)*{Cos[angleFunction[x]*\[Pi]/360],Sin[angleFunction[x]*\[Pi]/360]}+liftfunc[angleFunction[x]],{x,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
+speed=Norm/@Differences[path];speed/=Max[speed];
+noteTextCoordinate=Table[noteTextPrep={angleFunction[tAccumulateData[[i]]],lengthFunction[tAccumulateData[[i]]]};(rootMargin+noteTextPrep[[2]])*{Cos[noteTextPrep[[1]]*\[Pi]/360],Sin[noteTextPrep[[1]]*\[Pi]/360]}+liftfunc[noteTextPrep[[1]]],{i,Length[tAccumulateData]}];
+(*change string direction*)lDirection=Differences[Append[lData,0]];
 (*plot bow path*)
-pathplot=Show[Flatten@{Graphics[Flatten@{GrayLevel[.97],Table[{PointSize[.07*1.3^(-i*20/n)],Point[path[[i,2]]]},{i,If[Length[path]>n/2,n/2,Length[path]]}]}],
-(*string angle*)Table[ListLinePlot[{0.8*rootMargin*{Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]},(1.02+rootMargin) {Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]}},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.9*rootMargin) {Cos[\[Pi]/360*bAng[[i]]],Sin[\[Pi]/360*bAng[[i]]]}],20],{i,Length[bAng]}]}],
-(*bow length*)Graphics[Flatten@{Dashed,LightGray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,1,d-1}],Gray,Table[Circle[{0,0},rootMargin+i/d,{-(Max[bAng]+1)*\[Pi]/360,(Max[bAng]+1)*\[Pi]/360}],{i,{0,d}}]}],Graphics[{LightGray,Table[Style[Text[ToString[InputForm[(i-1)/d]],((i-1)/d+rootMargin) {Cos[\[Pi]/360*(Max[bAng]+1)],If[OddQ[i],1,-1]*Sin[\[Pi]/360*(Max[bAng]+1)]}+{-0.01,If[OddQ[i],1,-1]*0.02}],20],{i,1,d+1}]}],
-(*Path*)Graphics[Flatten@{Opacity[If[Length[tData]>maxindex,.4,.8]],Thick,Table[{colorfunction[speed[[i]]],Line[{path[[i,2]],path[[i+1,2]]}]},{i,Length[speed]}]}],
+pathplot=Show[Flatten@{Graphics[Flatten@{GrayLevel[.97],Table[{PointSize[.07*1.3^(-i*20/n)],Point[path[[i]]]},{i,If[Length[path]>n/2,n/2,Length[path]]}]}],
+(*string angle*)Table[ListLinePlot[temp=liftfunc[changeStringControlAngle[[i]]];{0.8*rootMargin*{Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]}+temp,(1.04+rootMargin) {Cos[\[Pi]/360*changeStringControlAngle[[i]]],Sin[\[Pi]/360*changeStringControlAngle[[i]]]}+temp},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.9*rootMargin) {Cos[\[Pi]/360*bAng[[i]]],Sin[\[Pi]/360*bAng[[i]]]}+liftfunc[bAng[[i]]]],20],{i,Length[bAng]}]}],
+(*bow length*)
+Table[ListLinePlot[Table[(i/d+rootMargin) {Cos[\[Pi]/360*angle],Sin[\[Pi]/360*angle]}+liftfunc[angle],{angle,bAng[[-1]],bAng[[1]]}],PlotStyle->Directive[Gray,Dashed]],{i,{0,d}}],Table[ListLinePlot[Table[(i/d+rootMargin) {Cos[\[Pi]/360*angle],Sin[\[Pi]/360*angle]}+liftfunc[angle],{angle,bAng[[-1]],bAng[[1]]}],PlotStyle->Directive[LightGray,Dashed]],{i,1,d-1}],Graphics[{LightGray,Table[Style[Text[ToString[InputForm[(i-1)/d]],((i-1)/d+rootMargin) {Cos[\[Pi]/360*(bAng[[1]]+1)],Sin[\[Pi]/360*(bAng[[If[OddQ[i],1,-1]]]+If[OddQ[i],1,-1])]}+liftfunc[(bAng[[If[OddQ[i],1,-1]]]+1)]+{-0.01,If[OddQ[i],1,-1]*0.02}],20],{i,1,d+1}]}],
+(*Path*)Graphics[Flatten@{Opacity[If[Length[tData]>maxindex,.4,.8]],Thick,Table[{colorfunction[speed[[i]]],Line[{path[[i]],path[[i+1]]}]},{i,Length[speed]}]}],
 (*time*)
 If[Length[tData]>maxindex,{},
 Graphics[Flatten@{Dashed,Gray,
 Table[
-(*set the distance depend by i thus it is less likely to overlap*)
+(*set the distance depend by i thus it is less likely to overlap; the sqrt function is because of the area of circle is proportional to radius^2*)
 theta=RandomReal[2*Pi];
 indicatorcoordinate=noteTextCoordinate[[i]]+.01*Sqrt[i]*{Cos[theta],Sin[theta]};
-{Line[{noteTextCoordinate[[i]],indicatorcoordinate}],Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],indicatorcoordinate],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White]}
+{Line[{indicatorcoordinate,noteTextCoordinate[[i]]}],Style[Text[ToString[tAccumulateData[[i]]]<>If[nData[[i]]=="","",":"]<>nData[[i]],indicatorcoordinate],Italic,If[lDirection[[i]]>0,Red,Blue],Background->White]}
 ,{i,Length[nData],1,-1}]
 },AspectRatio->1]]
 },PlotRange->All,Axes->False,ImageSize->1600];
