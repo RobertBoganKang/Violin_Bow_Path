@@ -6,6 +6,35 @@ t: time spent [t accumulate is time axis];
 s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1 (string number>3);
 l: position of bow [root:0, end:1]. 1 is effective bow length, every length measurement will based on this*)
 bowPath[data_]:=Module[{aData,angleData,angleData2,angleData3,angleFunction,angleplot,bAng,bowlengthlonger,bowAngle,changeStringControlAngle,colorfunction,d,indicatorcoordinate,lData,lDataPrep,lDataPrep1,lDirection,lengthData,lengthFunction,lift,liftfunc,liftradius,lIndex,maxindex,n,nData,nIndex,noteTextCoordinate,noteTextPrep,p2,path,pathplot,rootMargin,sData,sIndex,speed,stringangle,stringname,positionplot,tAccumulateData,tData,temp,theta,tIndex,title},
+(****start: data prepare****)
+(*a. title of data*)
+title=data[[1]];
+(*re-oganize data: find data*)
+(*b. find time*)
+tIndex=First@First@Position[title,"t"];
+tData=data[[2;;,tIndex]];
+(*sum up time span to build timestamp*)
+tAccumulateData=Accumulate[tData];
+(*c. find bow position*)
+lIndex=First@First@Position[title,"l"];
+lDataPrep=data[[2;;,lIndex]];
+(*ignore the missing data, then use interpolation to fill data; bow position function built here*)
+lDataPrep1=Table[If[lDataPrep[[i]]!="",{tAccumulateData[[i]],lDataPrep[[i]]},{}],{i,Length[lDataPrep]}];
+lDataPrep1=DeleteCases[lDataPrep1,{}];
+(*append the same position point at the begining and end of data to make interpolation function calculate this position at the speed of bow at 0*)
+PrependTo[lDataPrep1,{0,lDataPrep1[[1,2]]}];
+AppendTo[lDataPrep1,{lDataPrep1[[-1,1]]+1,lDataPrep1[[-1,2]]}];
+lengthFunction=Interpolation[lDataPrep1, Method->"Spline",InterpolationOrder->2];
+lData=Table[lengthFunction[tAccumulateData[[i]]],{i,Length[lDataPrep]}];
+(*d. find string index*)
+sIndex=First@First@Position[title,"s"];
+sData=data[[2;;,sIndex]];
+(*e. find indicator strings*)
+(*if no indication given, set to empty*)
+If[Position[title,"n"]!={},nIndex=First@First@Position[title,"n"];
+nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
+(****end: data prepare****)
+
 (****start: initilize system parameters****)
 (*a. system parameters*)
 (*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.2;
@@ -24,71 +53,44 @@ strings are on the circle of and liftradius are the radius of this circle*)liftr
 (*sample points for shortest time of notes*)n=40;
 (****end: initilize system parameters****)
 
-(****start: data prepare****)
-(*a. title of data*)
-title=data[[1]];
-(*re-oganize data: find data*)
-(*b. find time*)
-tIndex=First@First@Position[title,"t"];
-tData=data[[2;;,tIndex]];
-(*sum up time span to build timestamp*)
-tAccumulateData=Accumulate[tData];
-(*c. find bow position*)
-lIndex=First@First@Position[title,"l"];
-lDataPrep=data[[2;;,lIndex]];
-(*ignore the missing data, then use interpolation to fill data; bow position function built here*)
-lDataPrep1=Table[If[lDataPrep[[i]]!="",{tAccumulateData[[i]],lDataPrep[[i]]},{}],{i,Length[lDataPrep]}];
-lDataPrep1=DeleteCases[lDataPrep1,{}];
-(*append the same position point at the begining and end of data to make interpolation function calculate this position at the speed of bow at 0*)
-PrependTo[lDataPrep1,{0,lDataPrep1[[1,2]]}];
-AppendTo[lDataPrep1,{lDataPrep1[[-1,1]]+tData[[-1]],lDataPrep1[[-1,2]]}];
-lengthFunction=Interpolation[lDataPrep1, Method->"Spline",InterpolationOrder->2];
-lData=Table[lengthFunction[tAccumulateData[[i]]],{i,Length[lDataPrep]}];
-(*d. find string index*)
-sIndex=First@First@Position[title,"s"];
-sData=data[[2;;,sIndex]];
-(*e. find indicator strings*)
-(*if no indication given, set to empty*)
-If[Position[title,"n"]!={},nIndex=First@First@Position[title,"n"];
-nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
-(****end: data prepare****)
-
 (****start: calculate control point for interpolation function****)
 (*convert n to unit time of 1*)n/=Min[tData];
 (*stringangle: string angle between strings*)
 stringangle/=(Length[stringname]-1);
 (*bow angle: degree*)
-bAng=-Table[(i-0.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
+bAng=-Table[(i-.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
 (*changing angle between strings*)
 changeStringControlAngle=Reverse[Table[bAng[[i-1]]+bAng[[i]],{i,2,Length[bAng]}]/2];
-bowAngle=Table[i->Reverse[bAng][[i]],{i,Length[bAng]}];
-aData=sData/.bowAngle;
-angleData={{tAccumulateData[[1]],aData[[1]]}};
 (*calculate lift function: lift is the function of the distance of left most string to the line of bow with specific angle theta. 
 set the lift of leftmost string is 0*)
 lift[theta_]:=(Sin[(theta-90)*Pi/180]+1)*liftradius;
 liftfunc[angle_]:=(lift[angle-changeStringControlAngle[[-1]]]*{-Sin[Pi/180*angle],Cos[Pi/180*angle]});
+bowAngle=Table[i->Reverse[bAng][[i]],{i,Length[bAng]}];
+aData=sData/.bowAngle;
+angleData={{tAccumulateData[[1]],aData[[1]]}};
 (*algorithm for building control point for angle function: similar to differential function method*)
 (*1st derivitive control points: 
 [1] if change the string, set the angle at the changing angle of these two strings;
 [2] if not change the string, set the angle at the ideal position -- the middle of two changing angle*)
 Do[AppendTo[angleData,{tAccumulateData[[i]],Which[aData[[i]]-aData[[i-1]]<0,changeStringControlAngle[[sData[[i]]]],aData[[i]]-aData[[i-1]]>0,changeStringControlAngle[[sData[[i]]-1]],True,aData[[i]]]}],{i,2,Length[tAccumulateData]}];
+angleData2=angleData;
 (*2nd derivitive control points (overcome the peak point of changing string is too small):
 [method] if the situation of changing back to the string, such as G\[Rule]D\[Rule]G (change back to G; the angle two process of them is in the changing string angle of [G&D]), 
 increase this peak by seting the control point between them to make sure the bow is on the specific string*)
-angleData2=angleData;
 Do[If[(aData[[i]]-aData[[i-1]])*(aData[[i+1]]-aData[[i]])<0,AppendTo[angleData2,{(tAccumulateData[[i]]+tAccumulateData[[i+1]])/2,angleData[[i,2]]+Sign[aData[[i]]-aData[[i-1]]]*p2*stringangle}]],{i,2,Length[tAccumulateData]-1}];
 angleData2=Sort[angleData2];
 angleFunction=Interpolation[angleData2,Method->"Spline",InterpolationOrder->2];
 (****end: calculate control point for interpolation function****)
 
 (****start: plot section****)
-(*a. bow angle plot*)
+(*a. string plot*)
 angleData3=Table[{t,angleFunction[t]},{t,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
-angleplot=Show[{ListLinePlot[(angleData3+bAng[[1]])/stringangle+1,PlotStyle->Directive[Gray,Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Table[Text[nData[[i]],(angleData[[i]]+bAng[[1]])/stringangle+1,Background->White],{i,1,Length[nData]}]}]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","angle"},ImageSize->800];
+angleplot=Show[{ListLinePlot[(angleData3+bAng[[1]])/stringangle+1,PlotStyle->Directive[Gray,Dashed],PlotRange->All,Axes->False],
+Graphics[Flatten@{Black,Table[Text[nData[[i]],(angleData[[i]]+bAng[[1]])/stringangle+1,Background->White],{i,1,Length[nData]}]}]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","angle"},ImageSize->800,PlotRange->All];
 (*b. bow position plot*)
 lengthData=Table[{t*1.,lengthFunction[t]},{t,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
-positionplot=Show[{ListLinePlot[lengthData, PlotStyle -> Directive[Gray, Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Dashing[None],Table[Text[nData[[i]],{tAccumulateData[[i]],lData[[i]]},Background->White],{i,1,Length[nData]}]},PlotRange->All]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","bow position"},ImageSize->800];
+positionplot=Show[{ListLinePlot[lengthData, PlotStyle -> Directive[Gray, Dashed],PlotRange->All,Axes->False],
+Graphics[Flatten@{Black,Dashing[None],Table[Text[nData[[i]],{tAccumulateData[[i]],lData[[i]]},Background->White],{i,1,Length[nData]}]},PlotRange->All]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","bow position"},ImageSize->800,PlotRange->All];
 (*c. bow path plot*)
 (*plot path prepare*)
 path=Table[(lengthFunction[x]+rootMargin)*{Cos[angleFunction[x]*\[Pi]/180],Sin[angleFunction[x]*\[Pi]/180]}+liftfunc[angleFunction[x]],{x,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
