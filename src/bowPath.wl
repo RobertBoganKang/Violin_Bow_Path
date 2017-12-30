@@ -6,6 +6,24 @@ t: time spent [t accumulate is time axis];
 s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1 (string number>3);
 l: position of bow [root:0, end:1]. 1 is effective bow length, every length measurement will based on this*)
 bowPath[data_]:=Module[{aData,angleData,angleData2,angleData3,angleFunction,angleplot,bAng,bowlengthlonger,bowAngle,changeStringControlAngle,colorfunction,d,indicatorcoordinate,lData,lDataPrep,lDataPrep1,lDirection,lengthData,lengthFunction,lift,liftfunc,liftradius,lIndex,maxindex,n,nData,nIndex,noteTextCoordinate,noteTextPrep,p2,path,pathplot,rootMargin,sData,sIndex,speed,stringangle,stringname,stringplot,tAccumulateData,tData,temp,theta,tIndex,title},
+(****start: initilize system parameters****)
+(*a. system parameters*)
+(*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.2;
+(*second deirivitive peak percentage of string angle*)p2=0.3;
+(*string name*)stringname={"G","D","A","E"};
+(*(*viola*)stringname={"C","G","D","A"};*)(*(*cello*)stringname={"A","D","G","C"};*)(*(*bass*)stringname={"E","A","D","G"};*)(*(*Cello da spalla*)stringname={"C","G","D","A","E"};*)
+(*string total angle: total degrees of the largest changing angle difference*)stringangle=40;
+(*lift radius: when turning, there is a lift for strings which approximate the geometric location of string.
+strings are on the circle of and liftradius are the radius of this circle*)liftradius=1/8.;
+(*b. UI parameters*)
+(*max showing index*)maxindex=30;
+(*bow length percentage of longer*)bowlengthlonger=1.1;
+(*length division*)d=4;
+(*color function of path*)colorfunction[x_]:=ColorData["Rainbow"][x];
+(*colorfunction[x_]:=GrayLevel[1-x];*)
+(*sample points for shortest time of notes*)n=40;
+(****end: initilize system parameters****)
+
 (****start: data prepare****)
 (*a. title of data*)
 title=data[[1]];
@@ -34,24 +52,6 @@ sData=data[[2;;,sIndex]];
 If[Position[title,"n"]!={},nIndex=First@First@Position[title,"n"];
 nData=data[[2;;,nIndex]];,nData=Table["",{i,Length[lData]}]];
 (****end: data prepare****)
-
-(****start: initilize system parameters****)
-(*a. system parameters*)
-(*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.2;
-(*second deirivitive peak percentage of string angle*)p2=0.3;
-(*string name*)stringname={"G","D","A","E"};
-(*(*viola*)stringname={"C","G","D","A"};*)(*(*cello*)stringname={"A","D","G","C"};*)(*(*bass*)stringname={"E","A","D","G"};*)(*(*Cello da spalla*)stringname={"C","G","D","A","E"};*)
-(*string total angle: total degrees of the largest changing angle difference*)stringangle=40;
-(*lift radius: when turning, there is a lift for strings which approximate the geometric location of string.
-strings are on the circle of and liftradius are the radius of this circle*)liftradius=1/8.;
-(*b. UI parameters*)
-(*max showing index*)maxindex=30;
-(*bow length percentage of longer*)bowlengthlonger=1.1;
-(*length division*)d=4;
-(*color function of path*)colorfunction[x_]:=ColorData["Rainbow"][x];
-(*colorfunction[x_]:=GrayLevel[1-x];*)
-(*sample points for shortest time of notes*)n=40;
-(****end: initilize system parameters****)
 
 (****start: calculate control point for interpolation function****)
 (*convert n to unit time of 1*)n/=Min[tData];
