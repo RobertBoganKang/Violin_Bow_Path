@@ -61,13 +61,13 @@ stringangle/=(Length[stringname]-1);
 bAng=-Table[(i-0.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
 (*changing angle between strings*)
 changeStringControlAngle=Reverse[Table[bAng[[i-1]]+bAng[[i]],{i,2,Length[bAng]}]/2];
+bowAngle=Table[i->Reverse[bAng][[i]],{i,Length[bAng]}];
+aData=sData/.bowAngle;
+angleData={{tAccumulateData[[1]],aData[[1]]}};
 (*calculate lift function: lift is the function of the distance of left most string to the line of bow with specific angle theta. 
 set the lift of leftmost string is 0*)
 lift[theta_]:=(Sin[(theta-90)*Pi/180]+1)*liftradius;
 liftfunc[angle_]:=(lift[angle-changeStringControlAngle[[-1]]]*{-Sin[Pi/180*angle],Cos[Pi/180*angle]});
-bowAngle=Table[i->Reverse[bAng][[i]],{i,Length[bAng]}];
-aData=sData/.bowAngle;
-angleData={{tAccumulateData[[1]],aData[[1]]}};
 (*algorithm for building control point for angle function: similar to differential function method*)
 (*1st derivitive control points: 
 [1] if change the string, set the angle at the changing angle of these two strings;
