@@ -40,7 +40,7 @@ Algorithm is written in the `./src/bowPath.wl` comments. Read it and you can get
 ### Demo
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo.png "Demo")
 ### Demo2
-![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo2.png "Demo")
+![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/demo2.png "Demo2")
 ### Swipe
 ![alt text](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/swipe.png "Swipe")
 [Video of Swipe](https://github.com/RobertBoganKang/Violin_Bow_Path/blob/master/demo/swipe.mp4 "Swipe Video")
