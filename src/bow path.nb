@@ -181,7 +181,7 @@ Cell[BoxData[
 }, Open  ]]
 },
 WindowSize->{789, 816},
-WindowMargins->{{59, Automatic}, {Automatic, 65}},
+WindowMargins->{{440, Automatic}, {0, Automatic}},
 FrontEndVersion->"11.2 for Linux x86 (64-bit) (September 10, 2017)",
 StyleDefinitions->"Default.nb"
 ]

@@ -5,7 +5,7 @@ n: indication of notes;
 t: time spent [t accumulate is time axis];
 s: string [G:4, D:3, A:2, E:1] for violin, count from right to left starting from 1 (string number>3);
 l: position of bow [root:0, end:1]. 1 is effective bow length, every length measurement will based on this*)
-bowPath[data_]:=Module[{aData,angleData,angleData2,angleData3,angleFunction,angleplot,bAng,bowlengthlonger,bowAngle,changeStringControlAngle,colorfunction,d,indicatorcoordinate,lData,lDataPrep,lDataPrep1,lDirection,lengthData,lengthFunction,lift,liftfunc,liftradius,lIndex,maxindex,n,nData,nIndex,noteTextCoordinate,noteTextPrep,p2,path,pathplot,rootMargin,sData,sIndex,speed,stringangle,stringname,stringplot,tAccumulateData,tData,temp,theta,tIndex,title},
+bowPath[data_]:=Module[{aData,angleData,angleData2,angleData3,angleFunction,angleplot,bAng,bowlengthlonger,bowAngle,changeStringControlAngle,colorfunction,d,indicatorcoordinate,lData,lDataPrep,lDataPrep1,lDirection,lengthData,lengthFunction,lift,liftfunc,liftradius,lIndex,maxindex,n,nData,nIndex,noteTextCoordinate,noteTextPrep,p2,path,pathplot,rootMargin,sData,sIndex,speed,stringangle,stringname,positionplot,tAccumulateData,tData,temp,theta,tIndex,title},
 (****start: initilize system parameters****)
 (*a. system parameters*)
 (*margin from origin point as root of bow [assumption: strings are tiny comparing with length of bow]*)rootMargin=0.2;
@@ -73,22 +73,22 @@ liftfunc[angle_]:=(lift[angle-changeStringControlAngle[[-1]]]*{-Sin[Pi/180*angle
 [1] if change the string, set the angle at the changing angle of these two strings;
 [2] if not change the string, set the angle at the ideal position -- the middle of two changing angle*)
 Do[AppendTo[angleData,{tAccumulateData[[i]],Which[aData[[i]]-aData[[i-1]]<0,changeStringControlAngle[[sData[[i]]]],aData[[i]]-aData[[i-1]]>0,changeStringControlAngle[[sData[[i]]-1]],True,aData[[i]]]}],{i,2,Length[tAccumulateData]}];
-angleData2=angleData;
 (*2nd derivitive control points (overcome the peak point of changing string is too small):
 [method] if the situation of changing back to the string, such as G\[Rule]D\[Rule]G (change back to G; the angle two process of them is in the changing string angle of [G&D]), 
 increase this peak by seting the control point between them to make sure the bow is on the specific string*)
+angleData2=angleData;
 Do[If[(aData[[i]]-aData[[i-1]])*(aData[[i+1]]-aData[[i]])<0,AppendTo[angleData2,{(tAccumulateData[[i]]+tAccumulateData[[i+1]])/2,angleData[[i,2]]+Sign[aData[[i]]-aData[[i-1]]]*p2*stringangle}]],{i,2,Length[tAccumulateData]-1}];
 angleData2=Sort[angleData2];
 angleFunction=Interpolation[angleData2,Method->"Spline",InterpolationOrder->2];
 (****end: calculate control point for interpolation function****)
 
 (****start: plot section****)
-(*a. string plot*)
+(*a. bow angle plot*)
 angleData3=Table[{t,angleFunction[t]},{t,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
-stringplot=Show[{ListLinePlot[angleData3,PlotStyle->Directive[Gray,Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Table[Text[nData[[i]],angleData[[i]],Background->White],{i,1,Length[nData]}]}]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","angle"},ImageSize->800];
-(*b. bow angle plot*)
+angleplot=Show[{ListLinePlot[(angleData3+bAng[[1]])/stringangle+1,PlotStyle->Directive[Gray,Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Table[Text[nData[[i]],(angleData[[i]]+bAng[[1]])/stringangle+1,Background->White],{i,1,Length[nData]}]}]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","angle"},ImageSize->800];
+(*b. bow position plot*)
 lengthData=Table[{t*1.,lengthFunction[t]},{t,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
-angleplot=Show[{ListLinePlot[lengthData, PlotStyle -> Directive[Gray, Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Dashing[None],Table[Text[nData[[i]],{tAccumulateData[[i]],lData[[i]]},Background->White],{i,1,Length[nData]}]},PlotRange->All]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","bow position"},ImageSize->800];
+positionplot=Show[{ListLinePlot[lengthData, PlotStyle -> Directive[Gray, Dashed],PlotRange->All,Axes->False],Graphics[Flatten@{Black,Dashing[None],Table[Text[nData[[i]],{tAccumulateData[[i]],lData[[i]]},Background->White],{i,1,Length[nData]}]},PlotRange->All]},Frame->True,AspectRatio->1/4,Axes->False,FrameLabel->{"t","bow position"},ImageSize->800];
 (*c. bow path plot*)
 (*plot path prepare*)
 path=Table[(lengthFunction[x]+rootMargin)*{Cos[angleFunction[x]*\[Pi]/180],Sin[angleFunction[x]*\[Pi]/180]}+liftfunc[angleFunction[x]],{x,tAccumulateData[[1]],tAccumulateData[[-1]],1/n}];
@@ -97,7 +97,9 @@ noteTextCoordinate=Table[noteTextPrep={angleFunction[tAccumulateData[[i]]],lengt
 (*change string direction*)lDirection=Differences[Append[lData,0]];
 (*plot bow path*)
 pathplot=Show[Flatten@{Graphics[Flatten@{GrayLevel[.97],Table[{PointSize[.07*40^(-i/n)],Point[path[[i]]]},{i,tData[[1]]*n}]}],
-(*string angle*)Table[ListLinePlot[temp=liftfunc[changeStringControlAngle[[i]]];{0.8*rootMargin*{Cos[\[Pi]/180*changeStringControlAngle[[i]]],Sin[\[Pi]/180*changeStringControlAngle[[i]]]}+temp,(1.04+rootMargin) {Cos[\[Pi]/180*changeStringControlAngle[[i]]],Sin[\[Pi]/180*changeStringControlAngle[[i]]]}+temp},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.9*rootMargin) {Cos[\[Pi]/180*bAng[[i]]],Sin[\[Pi]/180*bAng[[i]]]}+liftfunc[bAng[[i]]]],20],{i,Length[bAng]}]}],
+(*string angle*)Table[ListLinePlot[temp=liftfunc[changeStringControlAngle[[i]]];{0.8*rootMargin*{Cos[\[Pi]/180*changeStringControlAngle[[i]]],Sin[\[Pi]/180*changeStringControlAngle[[i]]]}+temp,(1.04+rootMargin) {Cos[\[Pi]/180*changeStringControlAngle[[i]]],Sin[\[Pi]/180*changeStringControlAngle[[i]]]}+temp},PlotStyle->Directive[LightGray,Dashed]],{i,Length[changeStringControlAngle]}],
+Graphics[{LightGray,Table[Style[Text[stringname[[i]],(.89*rootMargin) {Cos[\[Pi]/180*bAng[[i]]],Sin[\[Pi]/180*bAng[[i]]]}+liftfunc[bAng[[i]]]],20],{i,Length[bAng]}]}],
+Graphics[{LightGray,Table[Style[Text["("<>ToString[Length[bAng]-i+1]<>")",(.95*rootMargin) {Cos[\[Pi]/180*bAng[[i]]],Sin[\[Pi]/180*bAng[[i]]]}+liftfunc[bAng[[i]]]],12],{i,Length[bAng]}]}],
 (*bow length*)
 Table[ListLinePlot[Table[(i/d+rootMargin) {Cos[\[Pi]/180*angle],Sin[\[Pi]/180*angle]}+liftfunc[angle],{angle,bowlengthlonger*bAng[[-1]],bowlengthlonger*bAng[[1]]}],PlotStyle->Directive[Gray,Dashed]],{i,{0,d}}],
 Table[ListLinePlot[Table[(i/d+rootMargin) {Cos[\[Pi]/180*angle],Sin[\[Pi]/180*angle]}+liftfunc[angle],{angle,bowlengthlonger*bAng[[-1]],bowlengthlonger*bAng[[1]]}],PlotStyle->Directive[LightGray,Dashed]],{i,1,d-1}],
@@ -117,7 +119,7 @@ indicatorcoordinate=noteTextCoordinate[[i]]+.01*Sqrt[i]*{Cos[theta],Sin[theta]};
 (****end: plot section****)
 
 (****show result of plots****)
-Column[{pathplot,Grid[{{stringplot,angleplot}},ItemSize->Full]},Frame->True]];
+Column[{pathplot,Grid[{{angleplot,positionplot}},ItemSize->Full]},Frame->True]];
 
 
 (*export function to export the result:
