@@ -41,7 +41,7 @@ lDataPrep1=Table[If[lDataPrep[[i]]!="",{tAccumulateData[[i]],lDataPrep[[i]]},{}]
 lDataPrep1=DeleteCases[lDataPrep1,{}];
 (*append the same position point at the begining and end of data to make interpolation function calculate this position at the speed of bow at 0*)
 PrependTo[lDataPrep1,{0,lDataPrep1[[1,2]]}];
-AppendTo[lDataPrep1,{lDataPrep1[[-1,1]]+1,lDataPrep1[[-1,2]]}];
+AppendTo[lDataPrep1,{lDataPrep1[[-1,1]]+tData[[-1]],lDataPrep1[[-1,2]]}];
 lengthFunction=Interpolation[lDataPrep1, Method->"Spline",InterpolationOrder->2];
 lData=Table[lengthFunction[tAccumulateData[[i]]],{i,Length[lDataPrep]}];
 (*d. find string index*)
