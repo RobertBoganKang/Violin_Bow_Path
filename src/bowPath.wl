@@ -58,7 +58,7 @@ strings are on the circle of and liftradius are the radius of this circle*)liftr
 (*stringangle: string angle between strings*)
 stringangle/=(Length[stringname]-1);
 (*bow angle: degree*)
-bAng=-Table[(i-.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
+bAng=-Table[(i-0.5(Length[stringname]-1))*stringangle,{i,0,Length[stringname]-1}];
 (*changing angle between strings*)
 changeStringControlAngle=Reverse[Table[bAng[[i-1]]+bAng[[i]],{i,2,Length[bAng]}]/2];
 (*calculate lift function: lift is the function of the distance of left most string to the line of bow with specific angle theta. 
